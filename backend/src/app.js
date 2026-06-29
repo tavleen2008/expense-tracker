@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const authRoutes = require("./routes/authRoutes");
+const expenseRoutes = require("./routes/expenseRoutes");
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/expenses", expenseRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
