@@ -1,7 +1,11 @@
-const Expense = require("../models/Expense");
+const mongoose = require("mongoose");
+const Expense = require("../models/expense");
 
 const getDashboardData = async (req, res) => {
   try {
+    // Cast to ObjectId — aggregation $match bypasses Mongoose auto-casting
+    const userId = new mongoose.Types.ObjectId(req.user.id);
+
     // Start of current month
     const startOfMonth = new Date(
       new Date().getFullYear(),
@@ -26,7 +30,7 @@ const getDashboardData = async (req, res) => {
       Expense.aggregate([
         {
           $match: {
-            user: req.user.id,
+            user: userId,
           },
         },
         {
@@ -43,7 +47,7 @@ const getDashboardData = async (req, res) => {
       Expense.aggregate([
         {
           $match: {
-            user: req.user.id,
+            user: userId,
             date: {
               $gte: startOfMonth,
             },
@@ -63,7 +67,7 @@ const getDashboardData = async (req, res) => {
       Expense.aggregate([
         {
           $match: {
-            user: req.user.id,
+            user: userId,
             date: {
               $gte: last30Days,
             },
@@ -81,7 +85,7 @@ const getDashboardData = async (req, res) => {
 
       // Recent Expenses
       Expense.find({
-        user: req.user.id,
+        user: userId,
       })
         .sort({ date: -1 })
         .limit(5),
@@ -90,7 +94,7 @@ const getDashboardData = async (req, res) => {
       Expense.aggregate([
         {
           $match: {
-            user: req.user.id,
+            user: userId,
           },
         },
         {
@@ -114,7 +118,7 @@ const getDashboardData = async (req, res) => {
       Expense.aggregate([
         {
           $match: {
-            user: req.user.id,
+            user: userId,
           },
         },
         {
@@ -136,7 +140,7 @@ const getDashboardData = async (req, res) => {
 
       // Total Transactions
       Expense.countDocuments({
-        user: req.user.id,
+        user: userId,
       }),
     ]);
 
